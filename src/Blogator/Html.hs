@@ -1,23 +1,21 @@
-{-# LANGUAGE OverloadedStrings #-}
+module Blogator.Html
+    where
 
-module Web.Blogator.Html where
+import           Blogator.Data.Post
+import           Data.Coerce                 ( coerce )
+import qualified Data.Text                   as T
+import           Data.Time.Calendar          ( toGregorian )
+import           Text.Blaze.Html             ( Html, textValue )
+import           Text.Blaze.Html5            as H
+import           Text.Blaze.Html5.Attributes as A
+import           Text.Highlighting.Kate      ( espresso, styleToCss )
 
-import qualified Data.Text as T
-import Data.Time.Calendar (toGregorian)
-import Text.Blaze.Html (Html, textValue)
-import Text.Blaze.Html5 as H
-import Text.Blaze.Html5.Attributes as A
-import Text.Highlighting.Kate (styleToCss, espresso)
-import Web.Blogator.Types
-import Data.Coerce (coerce)
-
-data Config = Config
-  { cfgTitle :: T.Text,
-    cfgDesc :: T.Text,
-    cfgLang :: T.Text,
-    cfgRtl :: Bool
-  }
-  deriving (Show, Eq, Ord)
+data Config = Config { cfgTitle :: T.Text
+                     , cfgDesc  :: T.Text
+                     , cfgLang  :: T.Text
+                     , cfgRtl   :: Bool
+                     }
+  deriving (Eq, Ord, Show)
 
 defaultConfig :: Config
 defaultConfig =
@@ -34,12 +32,12 @@ template cfg posts = do
   H.html ! A.lang (textValue $ cfgLang cfg) $ do
     H.head $ do
       H.meta ! A.charset "utf-8"
-      H.title $ toHtml (cfgTitle cfg) 
+      H.title $ toHtml (cfgTitle cfg)
 
       H.link ! A.rel "stylesheet" ! A.type_ "text/css" ! A.href "css/style.css"
 
       H.style ! A.type_ "text/css" $ toHtml $ styleToCss espresso
-    
+
     H.body $ do
       H.div ! A.class_ "container" $ do
         H.div ! A.id "title" $ do
@@ -52,9 +50,9 @@ template cfg posts = do
 
 postHtml :: Post -> Html
 postHtml Post {..} = do
-  H.h2 $ H.a ! A.href (textValue postRoute <> ".html") $ toHtml postTitle
-  H.h5 $ date postDate
-  postBody
+  H.h2 $ H.a ! A.href (textValue route <> ".html") $ toHtml title
+  -- H.h5 $ fromDate date
+  body
   where
-    date (toGregorian -> (yyyy, mm, dd)) =
+    fromDate (toGregorian -> (yyyy, mm, dd)) =
       toHtml $ show dd <> "/" <> show mm <> "/" <> show yyyy

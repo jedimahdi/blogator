@@ -20,11 +20,16 @@ category:           Web
 extra-source-files: CHANGELOG.md
 
 library
-    exposed-modules:  Web.Blogator
-                    , Web.Blogator.Parse
-                    , Web.Blogator.Types
-                    , Web.Blogator.Html
-                    , Web.Blogator.Run
+    exposed-modules:  Blogator
+                    , Blogator.Data.Post
+                    , Blogator.Data.Date
+                    , Blogator.Data.Env
+                    , Blogator.Effect.FileSystem
+                    , Blogator.Anatomy.Posts
+                    , Blogator.Anatomy.Index
+                    , Blogator.Anatomy.OutputDirectory
+                    , Blogator.Html
+                    , Blogator.Run
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -41,8 +46,12 @@ library
                     , blaze-html
                     , highlighting-kate
                     , cheapskate
+                    , polysemy
+                    , polysemy-plugin
+                    , process
     hs-source-dirs:   src
     default-language: Haskell2010
+    ghc-options: -fplugin=Polysemy.Plugin
     default-extensions:  OverloadedStrings
                        , LambdaCase
                        , ViewPatterns
@@ -52,7 +61,18 @@ library
                        , TupleSections
                        , DeriveFunctor
                        , DeriveGeneric
+                       , DeriveAnyClass
+                       , DerivingStrategies
+                       , GeneralizedNewtypeDeriving
                        , EmptyDataDecls
+                       , DataKinds
+                       , FlexibleContexts
+                       , GADTs
+                       , PolyKinds
+                       , RankNTypes
+                       , TypeApplications
+                       , TypeOperators
+                       , TypeFamilies
 
 
 executable blogator

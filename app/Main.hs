@@ -1,6 +1,6 @@
 module Main where
 
-import Web.Blogator
+import Blogator
 
 main :: IO ()
 main = run
