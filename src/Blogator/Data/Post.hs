@@ -8,11 +8,15 @@ import           Cheapskate
 import           Control.Arrow
 import           Data.Text                     ( Text )
 import qualified Data.Text                     as Text
+import           Data.Text.Lazy                ( toStrict )
 import qualified Data.Text.Lazy                as TL
 import           GHC.Generics                  ( Generic )
+import           Skylighting                   ( SourceLine, Syntax, lookupSyntax, tokenize )
+import           Skylighting.Core
+    ( TokenizerConfig (..), defaultFormatOpts, formatHtmlBlock, formatHtmlInline )
+import           Skylighting.Syntax            ( defaultSyntaxMap )
 import           Text.Blaze.Html               ( Html, toHtml )
 import           Text.Blaze.Html.Renderer.Text ( renderHtml )
-import           Text.Highlighting.Kate
 
 data Post = Post { route :: Text
                  , title :: Text
@@ -20,13 +24,21 @@ data Post = Post { route :: Text
                  , body  :: Html
                  }
 
+getSyntax :: Text -> Syntax
+getSyntax lang = case lookupSyntax lang defaultSyntaxMap of
+                   Nothing -> error "Code with unsupported language."
+                   Just s  -> s
+
+highlightAST :: Text -> Text -> [SourceLine]
+highlightAST lang code = case tokenize (TokenizerConfig defaultSyntaxMap False) (getSyntax lang) code of
+                           Left e  -> error e
+                           Right x -> x
 
 addHighlighting :: Block -> Block
 addHighlighting (CodeBlock (CodeAttr lang _) t) =
-  HtmlBlock (Text.concat $ TL.toChunks
-             $ renderHtml $ toHtml
+  HtmlBlock ( toStrict $ renderHtml $ toHtml
              $ formatHtmlBlock defaultFormatOpts
-             $ highlightAs (Text.unpack lang) (Text.unpack t))
+             $ highlightAST lang t)
 addHighlighting x = x
 
 markdownOptions :: Options

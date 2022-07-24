@@ -1,6 +1,7 @@
 module Blogator.Data.Date
     ( Date
     , mkDate
+    , toDay
     ) where
 
 import           Control.Monad      ( join )
@@ -12,6 +13,8 @@ newtype Date
   = Date Day
   deriving newtype (Eq, Ord)
 
+toDay :: Date -> Day
+toDay (Date day) = day
 
 mkDate :: Text -> Either Text Date
 mkDate t =

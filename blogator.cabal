@@ -25,11 +25,13 @@ library
                     , Blogator.Data.Date
                     , Blogator.Data.Env
                     , Blogator.Effect.FileSystem
+                    , Blogator.Options
                     , Blogator.Anatomy.Posts
                     , Blogator.Anatomy.Index
                     , Blogator.Anatomy.OutputDirectory
                     , Blogator.Html
                     , Blogator.Run
+                    , Blogator.ColorScheme
 
     -- Modules included in this library but not exported.
     -- other-modules:
@@ -40,15 +42,19 @@ library
                     , time
                     , text
                     , bytestring
+                    , containers
                     , directory
                     , filepath
                     , shelly
                     , blaze-html
-                    , highlighting-kate
+                    , blaze-markup
                     , cheapskate
                     , polysemy
                     , polysemy-plugin
                     , process
+                    , optparse-generic
+                    , skylighting-core
+                    , skylighting
     hs-source-dirs:   src
     default-language: Haskell2010
     ghc-options: -fplugin=Polysemy.Plugin

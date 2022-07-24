@@ -1,7 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-module Blogator.Effect.FileSystem
-    where
+module Blogator.Effect.FileSystem where
 
 import           Data.Text         ( Text )
 import qualified Data.Text.IO      as TIO
@@ -18,7 +17,7 @@ data FileSystem m a where
   DoesDirectoryExist :: FilePath -> FileSystem m Bool
   CopyRecursive :: FilePath -> FilePath -> FileSystem m ()
   ReadFile :: FilePath -> FileSystem m Text
-  WriteFile :: FilePath -> TL.Text -> FileSystem m ()
+  WriteFile :: FilePath -> Text -> FileSystem m ()
 
 makeSem ''FileSystem
 
@@ -30,4 +29,4 @@ runFileSystemIO = interpret $ \case
   DoesDirectoryExist path       -> embed $ Directory.doesDirectoryExist path
   CopyRecursive src dest        -> embed $ callProcess "cp" ["-r", src, dest]
   ReadFile path                 -> embed $ TIO.readFile path
-  WriteFile path content        -> embed $ TLIO.writeFile path content
+  WriteFile path content        -> embed $ TIO.writeFile path content
