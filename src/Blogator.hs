@@ -1,5 +1,5 @@
-module Blogator   
-  ( module Export
-  ) where
+module Blogator (
+  module Export,
+) where
 
 import Blogator.Run as Export
